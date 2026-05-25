@@ -23,7 +23,13 @@ st.set_page_config(
 # ── Load model (cached — only loads once per session) ─────────────────────
 @st.cache_resource
 def load_model():
-    return keras.models.load_model('cssvd_model.keras')
+    return tf.keras.models.load_model(
+        'cssvd_model.keras',
+        compile=False,
+        custom_objects={
+            "EfficientNetPreprocessing": EfficientNetPreprocessing
+        }
+    )
 
 model = load_model()
 
