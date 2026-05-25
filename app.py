@@ -7,6 +7,7 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
+from model_utils import EfficientNetPreprocessing
 from PIL import Image
 
 # ── Page configuration ────────────────────────────────────────────────────
