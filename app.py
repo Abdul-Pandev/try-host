@@ -1,8 +1,9 @@
 # app.py — CocoaGuard GH CSSVD Detector
 # Sankofa Intelligence | Ghana | 2026
 
-import streamlit as st
-import tensorflow as tf
+import os
+os.environ["KERAS_BACKEND"] = "jax"
+import keras
 import numpy as np
 from PIL import Image
 
@@ -16,7 +17,7 @@ st.set_page_config(
 # ── Load model (cached — only loads once per session) ─────────────────────
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model('cssvd_model.keras')
+    return keras.models.load_model('cssvd_model.keras')
 
 model = load_model()
 

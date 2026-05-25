@@ -1,4 +1,5 @@
 streamlit
-tensorflow==2.16.1
+keras
 numpy
 Pillow
+jax[cpu]
