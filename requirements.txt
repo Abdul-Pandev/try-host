@@ -3,3 +3,4 @@ keras
 jax[cpu]
 numpy
 Pillow
+tensorflow
