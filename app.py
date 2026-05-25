@@ -76,4 +76,4 @@ if uploaded:
 
     with st.expander('See full breakdown'):
         st.progress(float(1 - probability), text = f'CSSVD: {(1-probability)*100:.1f}%')
-        st.progress(float(probability), text=f'Healthy: {probability*100:.1}%')
+        st.progress(float(probability), text=f'Healthy: {probability*100:.1f}%')
