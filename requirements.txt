@@ -1,5 +1,5 @@
 streamlit
-tensorflow-cpu
-tf-keras
+keras
+jax[cpu]
 numpy
 Pillow
