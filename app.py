@@ -12,7 +12,7 @@ st.set_page_config(
 
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model('phase2.keras',
+    return tf.keras.models.load_model('cssvd_model.keras',
                                       compile=False,
                                       custom_objects={
                                           'EfficientNetPreprocessing': EfficientNetPreprocessing
