@@ -67,9 +67,9 @@ if uploaded:
 
     st.divider()
     if result['type'] == 'success':
-        st.success(f'{result['icon']} {result['title']}')
+        st.success(f"{result['icon']} {result['title']}")
     else:
-        st.error(f'{result['icon']} {result['title']}')
+        st.error(f"{result['icon']} {result['title']}")
     
     st.metric('Confidence', f'{confidence*100:.1f}%')
     st.info(result['advice'])
