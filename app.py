@@ -59,7 +59,7 @@ if uploaded:
         img_array = np.array(img, dtype=np.float32)
         img_array = np.expand_dims(img_array, axis=0)
 
-        probability = model.predicting(img_array)[0][0]
+        probability = model.predict(img_array)[0][0]
         predicted = 'healthy' if probability > OPTIMAL_THRESHOLD else 'cssvd'
         confidence = probability if probability > OPTIMAL_THRESHOLD else 1 - probability
 
