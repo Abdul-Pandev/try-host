@@ -1,5 +1,4 @@
 streamlit
-keras
 jax[cpu]
 numpy
 Pillow
