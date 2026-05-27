@@ -82,6 +82,14 @@ uploaded = st.file_uploader(
     help='Take a clear, close-up photo of the leaf you want to check'
 )
 
+st.write("Current working directory:", os.getcwd())
+st.write("Audio folder exists:", os.path.exists("audio"))
+st.write("Eng folder exists:", os.path.exists("audio/eng"))
+st.write("File exists:", os.path.exists(f"audio/{lang_folder}/{predicted}.mp3"))
+st.write("Full path being checked:", f"audio/{lang_folder}/{predicted}.mp3")
+st.write("Lang folder value:", lang_folder)
+st.write("Predicted value:", predicted)
+
 if uploaded:
     image = Image.open(uploaded).convert('RGB')
     st.image(image, caption='Uploaded photo', use_column_width=True)
