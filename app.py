@@ -54,8 +54,6 @@ def play_audio(lang_folder, result_class):
         f'</audio>',
         unsafe_allow_html=True
     )
-    else:
-        st.warning("Audio file not found.")
 
 # ── UI ────────────────────────────────────────────────────────────
 st.title('🌿 CocoaGuard GH')
