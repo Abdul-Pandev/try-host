@@ -25,7 +25,7 @@ OPTIMAL_THRESHOLD = 0.65
 CLASS_NAMES = ['cssvd', 'healthy']
 
 LANGUAGES = {
-    "English": "en",
+    "English": "eng",
     "Twi": "twi",
     "Dagbani": "dagbani",
     "Ewe": "ewe"
@@ -46,10 +46,10 @@ RESULTS = {
     }
 }
 
-def play_audio(lang_code, result_class):
-    path = f'audio/{lang_code}_{result_class}.mp3'
+def play_audio(lang_folder, result_class):
+    path = f'audio/{lang_folder}/{result_class}.mp3'
     if not os.path.exists(path):
-        path = f'audio/en_{result_class}.mp3'
+        path = f'audio/eng/{result_class}.mp3'
     if os.path.exists(path):
         with open(path, 'rb') as f:
             b64 = base64.b64encode(f.read()).decode()
@@ -59,18 +59,19 @@ def play_audio(lang_code, result_class):
             f'</audio>',
             unsafe_allow_html=True
         )
+    else:
+        st.warning("Audio file not found.")
 
 # ── UI ────────────────────────────────────────────────────────────
 st.title('🌿 CocoaGuard GH')
 st.caption('CSSVD Early Detection - Powered by Sankofa Intelligence')
 st.divider()
 
-# Language selector — before anything else
 lang_label = st.selectbox(
     "🌍 Select your language before you continue",
     options=list(LANGUAGES.keys())
 )
-lang_code = LANGUAGES[lang_label]
+lang_folder = LANGUAGES[lang_label]
 st.success(f"✓ Language set to: {lang_label}")
 
 st.divider()
@@ -104,7 +105,7 @@ if uploaded:
     st.metric('Confidence', f'{confidence*100:.1f}%')
     st.info(result['advice'])
 
-    play_audio(lang_code, predicted)
+    play_audio(lang_folder, predicted)
 
     with st.expander('See full breakdown'):
         st.progress(float(1 - probability), text=f'CSSVD: {(1-probability)*100:.1f}%')
