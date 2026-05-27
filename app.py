@@ -47,18 +47,13 @@ RESULTS = {
 }
 
 def play_audio(lang_folder, result_class):
-    path = f'audio/{lang_folder}/{result_class}.mp3'
-    if not os.path.exists(path):
-        path = f'audio/eng/{result_class}.mp3'
-    if os.path.exists(path):
-        with open(path, 'rb') as f:
-            b64 = base64.b64encode(f.read()).decode()
-        st.markdown(
-            f'<audio autoplay controls style="width:100%;">'
-            f'<source src="data:audio/mp3;base64,{b64}" type="audio/mp3">'
-            f'</audio>',
-            unsafe_allow_html=True
-        )
+    url = f"https://raw.githubusercontent.com/Abdul-pandev/try-host/main/audio/{lang_folder}/{result_class}.mp3"
+    st.markdown(
+        f'<audio autoplay controls style="width:100%;">'
+        f'<source src="{url}" type="audio/mp3">'
+        f'</audio>',
+        unsafe_allow_html=True
+    )
     else:
         st.warning("Audio file not found.")
 
