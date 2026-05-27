@@ -47,13 +47,9 @@ RESULTS = {
 }
 
 def play_audio(lang_folder, result_class):
-    url = f"https://raw.githubusercontent.com/Abdul-pandev/try-host/main/audio/{lang_folder}/{result_class}.mp3"
-    st.markdown(
-        f'<audio autoplay controls style="width:100%;">'
-        f'<source src="{url}" type="audio/mp3">'
-        f'</audio>',
-        unsafe_allow_html=True
-    )
+    url = f"https://raw.githubusercontent.com/Abdul-Pandev/try-host/main/Audio/{lang_folder}/{result_class}.mp3"
+
+    st.audio(url, format="audio/mp3")
 
 # ── UI ────────────────────────────────────────────────────────────
 st.title('🌿 CocoaGuard GH')
