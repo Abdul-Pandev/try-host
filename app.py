@@ -27,7 +27,7 @@ CLASS_NAMES = ['cssvd', 'healthy']
 LANGUAGES = {
     "English": "eng",
     "Twi": "twi",
-    "Dagbani": "dagbani",
+    "Dagbani": "dag",
     "Ewe": "ewe"
 }
 
