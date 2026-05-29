@@ -28,11 +28,22 @@ def load_cocoa_checker():
 
 disease_model = load_disease_model()
 cocoa_model   = load_cocoa_checker()
+st.write("Cocoa model loaded:", cocoa_model.input_shape)
 
-cocoa_prob = cocoa_model.predict(img_array)[0][0]
-st.write(f"Raw output shape: {cocoa_model.predict(img_array).shape}")
-st.write(f"Full output: {cocoa_model.predict(img_array)}")
-st.write(f"Cocoa prob: {cocoa_prob:.4f}")
+
+with st.spinner('Checking image...'):
+    img = image.resize((224, 224))
+    img_array = np.array(img, dtype=np.float32)
+    img_array = np.expand_dims(img_array, axis=0)
+
+    try:
+        cocoa_prob = cocoa_model.predict(img_array)[0][0]
+        is_cocoa = cocoa_prob >= COCOA_THRESHOLD
+        st.write(f"Cocoa prob: {cocoa_prob:.4f}")
+    except Exception as e:
+        st.error(f"Cocoa model error: {e}")
+        st.stop()
+        
 # ── Constants ─────────────────────────────────────────────────────
 DISEASE_THRESHOLD = 0.65
 COCOA_THRESHOLD   = 0.5  # adjust if needed after testing
