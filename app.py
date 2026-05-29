@@ -99,9 +99,16 @@ if uploaded:
             st.stop()
 
     if not is_cocoa:
-        st.divider()
-        st.warning("🍃 This does not appear to be a cocoa leaf or stem. Please upload a clear photo of a cocoa plant.")
-        st.stop()
+    st.divider()
+
+    st.warning(
+        "🍃 This does not appear to be a cocoa leaf or stem. Please upload a clear photo of a cocoa plant."
+    )
+
+    play_audio(lang_folder, "non_cocoa")
+
+    st.stop()
+    
 
     # ── Step 2: Run disease detection ─────────────────────────────
     with st.spinner('Analyzing for CSSVD...'):
