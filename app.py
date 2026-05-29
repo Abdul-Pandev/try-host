@@ -98,7 +98,7 @@ if uploaded:
             st.error(f"Cocoa check failed: {e}")
             st.stop()
 
-    if not is_cocoa:
+if not is_cocoa:
     st.divider()
 
     st.warning(
