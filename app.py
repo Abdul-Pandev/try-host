@@ -21,26 +21,35 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Hide Streamlit branding */
-#MainMenu {visibility:hidden;}
-footer {visibility:hidden;}
-header {visibility:hidden;}
+.hero {
+    background:
+        linear-gradient(rgba(7, 47, 24, 0.82),
+        rgba(7, 47, 24, 0.82)),
+        url('https://images.unsplash.com/photo-1598515213692-d9c8b8f6dd12?q=80&w=1600&auto=format&fit=crop');
 
-/* Main background */
-.stApp {
-    background: linear-gradient(180deg, #f5fff5 0%, #edf7ed 100%);
-    font-family: 'Segoe UI', sans-serif;
+    background-size: cover;
+    background-position: center;
+    border-radius: 28px;
+    padding: 4rem 3rem;
+    color: white;
+    margin-bottom: 2rem;
 }
 
-/* Main container */
-.block-container {
-    padding-top: 1rem;
-    padding-bottom: 2rem;
-    max-width: 1250px;
+.hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
 }
 
-st.markdown("""
-<style>
+.hero-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 700px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 
 .hero {
     background:
@@ -84,8 +93,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
-""", unsafe_allow_html=True)
 
 /* Cards */
 .card {
