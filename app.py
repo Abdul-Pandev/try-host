@@ -1,4 +1,3 @@
-```python
 import streamlit as st
 import tensorflow as tf
 import numpy as np
@@ -440,4 +439,4 @@ st.markdown("<br><br>", unsafe_allow_html=True)
 st.caption(
     "CocoaGuard GH • AI for Sustainable Cocoa Farming in Ghana 🇬🇭"
 )
-```
+
