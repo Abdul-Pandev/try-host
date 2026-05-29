@@ -12,7 +12,7 @@ st.set_page_config(
     layout='centered'
 )
 
-# ── Load both models ──────────────────────────────────────────────
+# ── Load models ───────────────────────────────────────────────────
 @st.cache_resource
 def load_disease_model():
     return tf.keras.models.load_model('cssvd_model.keras',
@@ -24,29 +24,17 @@ def load_disease_model():
 @st.cache_resource
 def load_cocoa_checker():
     return tf.keras.models.load_model('cocoa_checker.keras',
-                                      compile=False)
+                                      compile=False,
+                                      custom_objects={
+                                          'EfficientNetPreprocessing': EfficientNetPreprocessing
+                                      })
 
 disease_model = load_disease_model()
 cocoa_model   = load_cocoa_checker()
-st.write("Cocoa model loaded:", cocoa_model.input_shape)
 
-
-with st.spinner('Checking image...'):
-    img = image.resize((224, 224))
-    img_array = np.array(img, dtype=np.float32)
-    img_array = np.expand_dims(img_array, axis=0)
-
-    try:
-        cocoa_prob = cocoa_model.predict(img_array)[0][0]
-        is_cocoa = cocoa_prob >= COCOA_THRESHOLD
-        st.write(f"Cocoa prob: {cocoa_prob:.4f}")
-    except Exception as e:
-        st.error(f"Cocoa model error: {e}")
-        st.stop()
-        
 # ── Constants ─────────────────────────────────────────────────────
 DISEASE_THRESHOLD = 0.65
-COCOA_THRESHOLD   = 0.5  # adjust if needed after testing
+COCOA_THRESHOLD   = 0.65
 
 LANGUAGES = {
     "English": "eng",
@@ -98,26 +86,34 @@ if uploaded:
     image = Image.open(uploaded).convert('RGB')
     st.image(image, caption='Uploaded photo', use_column_width=True)
 
+    # ── Step 1: Check if image is cocoa ───────────────────────────
     with st.spinner('Checking image...'):
         img = image.resize((224, 224))
         img_array = np.array(img, dtype=np.float32)
         img_array = np.expand_dims(img_array, axis=0)
 
-        # Step 1 — Is this a cocoa image?
-        cocoa_prob = cocoa_model.predict(img_array)[0][0]
-        is_cocoa = cocoa_prob >= COCOA_THRESHOLD
+        try:
+            cocoa_prob = cocoa_model.predict(img_array)[0][0]
+            is_cocoa = cocoa_prob >= COCOA_THRESHOLD
+        except Exception as e:
+            st.error(f"Cocoa check failed: {e}")
+            st.stop()
 
     if not is_cocoa:
         st.divider()
         st.warning("🍃 This does not appear to be a cocoa leaf or stem. Please upload a clear photo of a cocoa plant.")
         st.stop()
 
-    # Step 2 — Run disease detection only if cocoa confirmed
+    # ── Step 2: Run disease detection ─────────────────────────────
     with st.spinner('Analyzing for CSSVD...'):
-        probability = disease_model.predict(img_array)[0][0]
-        predicted  = 'healthy' if probability > DISEASE_THRESHOLD else 'cssvd'
-        confidence = probability if probability > DISEASE_THRESHOLD else 1 - probability
-        result     = RESULTS[predicted]
+        try:
+            probability = disease_model.predict(img_array)[0][0]
+            predicted  = 'healthy' if probability > DISEASE_THRESHOLD else 'cssvd'
+            confidence = probability if probability > DISEASE_THRESHOLD else 1 - probability
+            result     = RESULTS[predicted]
+        except Exception as e:
+            st.error(f"Disease detection failed: {e}")
+            st.stop()
 
     st.divider()
 
@@ -132,5 +128,7 @@ if uploaded:
     play_audio(lang_folder, predicted)
 
     with st.expander('See full breakdown'):
-        st.progress(float(1 - probability), text=f'CSSVD: {(1-probability)*100:.1f}%')
-        st.progress(float(probability), text=f'Healthy: {probability*100:.1f}%')
+        st.progress(float(1 - probability),
+                    text=f'CSSVD: {(1-probability)*100:.1f}%')
+        st.progress(float(probability),
+                    text=f'Healthy: {probability*100:.1f}%')
