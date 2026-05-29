@@ -31,7 +31,7 @@ cocoa_model   = load_cocoa_checker()
 
 # ── Constants ─────────────────────────────────────────────────────
 DISEASE_THRESHOLD = 0.65
-COCOA_THRESHOLD   = 0.65  # adjust if needed after testing
+COCOA_THRESHOLD   = 0.5  # adjust if needed after testing
 
 LANGUAGES = {
     "English": "eng",
