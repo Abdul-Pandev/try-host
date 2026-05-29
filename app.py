@@ -94,7 +94,7 @@ if uploaded:
         try:
             cocoa_prob = cocoa_model.predict(img_array)[0][0]
             st.write(f"Cocoa prob: {cocoa_prob:.4f}")
-            is_cocoa = cocoa_prob >= COCOA_THRESHOLD
+            is_cocoa = cocoa_prob <= COCOA_THRESHOLD
         except Exception as e:
             st.error(f"Cocoa check failed: {e}")
             st.stop()
