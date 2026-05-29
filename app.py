@@ -40,17 +40,51 @@ header {visibility:hidden;}
 }
 
 st.markdown("""
-<div class="hero">
-    <div class="hero-title">
-        CocoaGuard GH 🌿
-    </div>
+<style>
 
-    <div class="hero-subtitle">
+.hero {
+    background:
+        linear-gradient(rgba(7, 47, 24, 0.82),
+        rgba(7, 47, 24, 0.82)),
+        url('https://images.unsplash.com/photo-1598515213692-d9c8b8f6dd12?q=80&w=1600&auto=format&fit=crop');
+
+    background-size: cover;
+    background-position: center;
+    border-radius: 28px;
+    padding: 4rem 3rem;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 700px;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+st.markdown("""
+<div class="hero">
+    <h1 class="hero-title">CocoaGuard GH 🌿</h1>
+
+    <p class="hero-subtitle">
         Smart AI-powered early detection system for Cocoa Swollen Shoot Virus Disease (CSSVD),
         helping cocoa farmers across Ghana identify infections early, reduce crop losses,
         and improve sustainable cocoa production.
-    </div>
+    </p>
 </div>
+""", unsafe_allow_html=True)
+
+
 """, unsafe_allow_html=True)
 
 /* Cards */
