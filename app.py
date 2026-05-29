@@ -85,7 +85,7 @@ if uploaded:
     image = Image.open(uploaded).convert('RGB')
     st.image(image, caption='Uploaded photo', use_column_width=True)
 
-    # ── Step 1: Check if image is cocoa ───────────────────────────
+    # Step 1: Check if image is cocoa
     with st.spinner('Checking image...'):
         img = image.resize((224, 224))
         img_array = np.array(img, dtype=np.float32)
@@ -98,16 +98,17 @@ if uploaded:
             st.error(f"Cocoa check failed: {e}")
             st.stop()
 
-if not is_cocoa:
-    st.divider()
+    if not is_cocoa:
+        st.divider()
 
-    st.warning(
-        "🍃 This does not appear to be a cocoa leaf or stem. Please upload a clear photo of a cocoa plant."
-    )
+        st.warning(
+            "🍃 This does not appear to be a cocoa leaf or stem. Please upload a clear photo of a cocoa plant."
+        )
 
-    play_audio(lang_folder, "non_cocoa")
+        play_audio(lang_folder, "non_cocoa")
 
-    st.stop()
+        st.stop()
+        
     
 
     # ── Step 2: Run disease detection ─────────────────────────────
