@@ -4,81 +4,146 @@ import numpy as np
 from PIL import Image
 from model_utils import EfficientNetPreprocessing
 
+# ──────────────────────────────────────────────────────────────────
+# PAGE CONFIG
+# ──────────────────────────────────────────────────────────────────
+
 st.set_page_config(
-    page_title='CocoaGuard GH',
-    page_icon='🌿',
-    layout='centered'
+    page_title="CocoaGuard GH",
+    page_icon="🌿",
+    layout="wide"
 )
 
-# ── Custom Styling ────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
+# CUSTOM CSS
+# ──────────────────────────────────────────────────────────────────
+
 st.markdown("""
 <style>
 
 /* Hide Streamlit branding */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
 
-/* App background */
+/* Main background */
 .stApp {
-    background: linear-gradient(135deg, #f4fff4 0%, #eef8ee 100%);
+    background: linear-gradient(180deg, #f5fff5 0%, #edf7ed 100%);
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Hero section */
-.hero-box {
-    background: linear-gradient(135deg, #14532d, #166534);
-    padding: 2.5rem;
-    border-radius: 24px;
+/* Main container */
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    max-width: 1250px;
+}
+
+/* Hero Section */
+.hero {
+    background:
+        linear-gradient(rgba(7, 47, 24, 0.82),
+        rgba(7, 47, 24, 0.82)),
+        url('https://images.unsplash.com/photo-1598515213692-d9c8b8f6dd12?q=80&w=1600&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    border-radius: 28px;
+    padding: 4rem 3rem;
     color: white;
-    text-align: center;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.15);
 }
 
 .hero-title {
-    font-size: 2.7rem;
+    font-size: 3.4rem;
     font-weight: 800;
-    margin-bottom: 0.5rem;
+    line-height: 1.1;
 }
 
-.hero-sub {
-    font-size: 1.05rem;
+.hero-subtitle {
+    font-size: 1.15rem;
+    margin-top: 1rem;
     opacity: 0.92;
-    line-height: 1.6;
+    max-width: 700px;
+    line-height: 1.8;
 }
 
-/* Upload box */
+/* Cards */
+.card {
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(10px);
+    border-radius: 22px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+    border: 1px solid rgba(255,255,255,0.35);
+}
+
+/* Upload area */
 [data-testid="stFileUploader"] {
-    border: 2px dashed #166534;
-    border-radius: 18px;
-    padding: 1rem;
     background: white;
+    border: 2px dashed #166534;
+    border-radius: 20px;
+    padding: 1rem;
 }
 
-/* Metric container */
+/* Metric cards */
 [data-testid="metric-container"] {
     background: white;
     border-radius: 18px;
     padding: 1rem;
-    border: 1px solid #ecf0ec;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: none;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
 }
 
-/* Image card */
-.result-card {
-    padding: 1rem;
-    border-radius: 18px;
-    background: white;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #14532d 0%, #166534 100%);
 }
 
-/* Audio player */
+[data-testid="stSidebar"] * {
+    color: white;
+}
+
+/* Audio */
 audio {
     width: 100%;
-    margin-top: 12px;
+    margin-top: 10px;
+}
+
+/* Result badges */
+.success-box {
+    background: #dcfce7;
+    border-left: 6px solid #16a34a;
+    padding: 1rem;
+    border-radius: 16px;
+    color: #14532d;
+    font-weight: 600;
+}
+
+.error-box {
+    background: #fee2e2;
+    border-left: 6px solid #dc2626;
+    padding: 1rem;
+    border-radius: 16px;
+    color: #7f1d1d;
+    font-weight: 600;
+}
+
+.warning-box {
+    background: #fef3c7;
+    border-left: 6px solid #f59e0b;
+    padding: 1rem;
+    border-radius: 16px;
+    color: #78350f;
+    font-weight: 600;
+}
+
+/* Buttons */
+.stButton button {
+    background: #166534;
+    color: white;
+    border: none;
+    border-radius: 12px;
 }
 
 /* Progress */
@@ -89,7 +154,9 @@ audio {
 </style>
 """, unsafe_allow_html=True)
 
-# ── Load Models ───────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
+# LOAD MODELS
+# ──────────────────────────────────────────────────────────────────
 
 @st.cache_resource
 def load_cocoa_checker():
@@ -111,7 +178,9 @@ def load_disease_model():
 disease_model = load_disease_model()
 cocoa_model = load_cocoa_checker()
 
-# ── Constants ─────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
+# CONSTANTS
+# ──────────────────────────────────────────────────────────────────
 
 DISEASE_THRESHOLD = 0.65
 COCOA_THRESHOLD = 0.65
@@ -126,155 +195,232 @@ LANGUAGES = {
 RESULTS = {
     'healthy': {
         'icon': '✅',
-        'title': 'Healthy Plant',
-        'advice': 'No signs of CSSVD detected. Monitor your farm regularly.',
+        'title': 'Healthy Cocoa Plant',
+        'advice': 'No signs of Cocoa Swollen Shoot Virus Disease detected.',
         'type': 'success'
     },
 
     'cssvd': {
         'icon': '🚨',
         'title': 'CSSVD Detected',
-        'advice': 'Infection confirmed. Consult your extension officer immediately.',
+        'advice': 'Possible infection detected. Consult your extension officer immediately.',
         'type': 'error'
     }
 }
 
-# ── Audio ─────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
+# AUDIO
+# ──────────────────────────────────────────────────────────────────
 
 def play_audio(lang_folder, result_class):
     url = f"https://raw.githubusercontent.com/Abdul-Pandev/try-host/main/Audio/{lang_folder}/{result_class}.mp3"
     st.audio(url, format="audio/mp3")
 
-# ── Hero Section ──────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
+# SIDEBAR
+# ──────────────────────────────────────────────────────────────────
+
+with st.sidebar:
+
+    st.title("🌿 CocoaGuard GH")
+
+    st.markdown("""
+    AI-powered cocoa disease detection platform helping farmers identify
+    Cocoa Swollen Shoot Virus Disease early and protect crop yields.
+    """)
+
+    st.divider()
+
+    st.markdown("### 🌍 Language")
+
+    lang_label = st.selectbox(
+        "",
+        options=list(LANGUAGES.keys())
+    )
+
+    lang_folder = LANGUAGES[lang_label]
+
+    st.divider()
+
+    st.markdown("### 🛡 Features")
+
+    st.markdown("""
+    ✅ Cocoa Verification  
+    ✅ CSSVD Detection  
+    ✅ Audio Feedback  
+    ✅ Multi-language Support  
+    ✅ AI-powered Analysis  
+    """)
+
+# ──────────────────────────────────────────────────────────────────
+# HERO SECTION
+# ──────────────────────────────────────────────────────────────────
 
 st.markdown("""
-<div class="hero-box">
-    <div class="hero-title">🌿 CocoaGuard GH</div>
-    <div class="hero-sub">
-        AI-powered early detection system for Cocoa Swollen Shoot Virus Disease (CSSVD),
-        helping cocoa farmers identify infections early and protect crop yields across Ghana.
+<div class="hero">
+    <div class="hero-title">
+        CocoaGuard GH 🌿
+    </div>
+
+    <div class="hero-subtitle">
+        Smart AI-powered early detection system for Cocoa Swollen Shoot Virus Disease (CSSVD),
+        helping cocoa farmers across Ghana identify infections early, reduce crop losses,
+        and improve sustainable cocoa production.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── Language Selection ────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
+# MAIN CONTENT
+# ──────────────────────────────────────────────────────────────────
 
-st.markdown("### 🌍 Select Preferred Language")
+left, right = st.columns([1.1, 0.9], gap="large")
 
-lang_label = st.selectbox(
-    "",
-    options=list(LANGUAGES.keys())
-)
+# ──────────────────────────────────────────────────────────────────
+# LEFT COLUMN
+# ──────────────────────────────────────────────────────────────────
 
-lang_folder = LANGUAGES[lang_label]
+with left:
 
-st.info(f"🌐 Selected Language: {lang_label}")
+    st.markdown('<div class="card">', unsafe_allow_html=True)
 
-st.divider()
+    st.subheader("📸 Upload Cocoa Plant Image")
 
-# ── Upload Section ────────────────────────────────────────────────
+    uploaded = st.file_uploader(
+        "Upload a clear image of a cocoa leaf, pod, or stem",
+        type=['jpg', 'jpeg', 'png']
+    )
 
-st.markdown("### 📸 Upload Cocoa Plant Image")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-uploaded = st.file_uploader(
-    "Upload a clear photo of a cocoa leaf, stem, or pod",
-    type=['jpg', 'jpeg', 'png'],
-    help='Use a well-lit and focused image for better detection accuracy.'
-)
+    if uploaded:
 
-# ── Prediction Flow ───────────────────────────────────────────────
+        image = Image.open(uploaded).convert('RGB')
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+
+        st.subheader("🖼 Uploaded Sample")
+
+        st.image(image, use_column_width=True)
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# ──────────────────────────────────────────────────────────────────
+# RIGHT COLUMN
+# ──────────────────────────────────────────────────────────────────
+
+with right:
+
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
+    st.subheader("ℹ️ About CocoaGuard")
+
+    st.markdown("""
+    CocoaGuard GH uses Artificial Intelligence to assist cocoa farmers and agricultural
+    extension officers in identifying Cocoa Swollen Shoot Virus Disease (CSSVD) early.
+
+    Upload a cocoa plant image and the system will:
+    - Verify if it is a cocoa plant
+    - Detect signs of CSSVD
+    - Provide confidence scores
+    - Deliver multilingual audio feedback
+    """)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ──────────────────────────────────────────────────────────────────
+# PREDICTION FLOW
+# ──────────────────────────────────────────────────────────────────
 
 if uploaded:
 
-    image = Image.open(uploaded).convert('RGB')
+    img = image.resize((224, 224))
+    img_array = np.array(img, dtype=np.float32)
+    img_array = np.expand_dims(img_array, axis=0)
 
-    st.markdown("""
-    <div class="result-card">
-        <h4>Uploaded Sample</h4>
-    </div>
-    """, unsafe_allow_html=True)
+    # Cocoa Check
+    with st.spinner("🌿 Verifying cocoa plant..."):
 
-    st.image(image, use_column_width=True)
-
-    # ── Step 1: Cocoa Check ───────────────────────────────────────
-
-    with st.spinner('🌿 Verifying cocoa plant...'):
-
-        img = image.resize((224, 224))
-
-        img_array = np.array(img, dtype=np.float32)
-        img_array = np.expand_dims(img_array, axis=0)
-
-        try:
-            cocoa_prob = cocoa_model.predict(img_array)[0][0]
-            is_cocoa = cocoa_prob <= COCOA_THRESHOLD
-
-        except Exception as e:
-            st.error(f"Cocoa verification failed: {e}")
-            st.stop()
-
-    # ── Non Cocoa ─────────────────────────────────────────────────
+        cocoa_prob = cocoa_model.predict(img_array)[0][0]
+        is_cocoa = cocoa_prob <= COCOA_THRESHOLD
 
     if not is_cocoa:
 
-        st.divider()
-
-        st.warning(
-            "🍃 This does not appear to be a cocoa plant. Please upload a clear cocoa leaf, stem, or pod image."
-        )
+        st.markdown("""
+        <div class="warning-box">
+        🍃 This image does not appear to be a cocoa plant.
+        Please upload a clear cocoa leaf, pod, or stem image.
+        </div>
+        """, unsafe_allow_html=True)
 
         play_audio(lang_folder, "non_cocoa")
 
         st.stop()
 
-    # ── Disease Detection ─────────────────────────────────────────
+    # Disease Detection
+    with st.spinner("🔬 Running AI disease analysis..."):
 
-    with st.spinner('🔬 Analyzing for CSSVD...'):
+        probability = disease_model.predict(img_array)[0][0]
 
-        try:
-            probability = disease_model.predict(img_array)[0][0]
+        predicted = (
+            'healthy'
+            if probability > DISEASE_THRESHOLD
+            else 'cssvd'
+        )
 
-            predicted = (
-                'healthy'
-                if probability > DISEASE_THRESHOLD
-                else 'cssvd'
-            )
+        confidence = (
+            probability
+            if probability > DISEASE_THRESHOLD
+            else 1 - probability
+        )
 
-            confidence = (
-                probability
-                if probability > DISEASE_THRESHOLD
-                else 1 - probability
-            )
+        result = RESULTS[predicted]
 
-            result = RESULTS[predicted]
+    st.markdown("<br>", unsafe_allow_html=True)
 
-        except Exception as e:
-            st.error(f"Disease detection failed: {e}")
-            st.stop()
-
-    st.divider()
-
-    # ── Result Display ────────────────────────────────────────────
-
+    # Result Card
     if result['type'] == 'success':
-        st.success(f"{result['icon']} {result['title']}")
-    else:
-        st.error(f"{result['icon']} {result['title']}")
 
-    st.metric(
-        "Detection Confidence",
-        f"{confidence * 100:.1f}%"
-    )
+        st.markdown(f"""
+        <div class="success-box">
+        {result['icon']} {result['title']}
+        </div>
+        """, unsafe_allow_html=True)
+
+    else:
+
+        st.markdown(f"""
+        <div class="error-box">
+        {result['icon']} {result['title']}
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    m1, m2 = st.columns(2)
+
+    with m1:
+        st.metric(
+            "Confidence Score",
+            f"{confidence * 100:.1f}%"
+        )
+
+    with m2:
+        st.metric(
+            "Selected Language",
+            lang_label
+        )
 
     st.info(result['advice'])
 
-    # ── Audio Feedback ────────────────────────────────────────────
-
+    # Audio
+    st.subheader("🔊 Audio Feedback")
     play_audio(lang_folder, predicted)
 
-    # ── Detailed Breakdown ────────────────────────────────────────
-
-    with st.expander('📊 View Detailed Prediction Breakdown'):
+    # Breakdown
+    with st.expander("📊 Detailed Prediction Breakdown"):
 
         st.progress(
             float(1 - probability),
@@ -286,10 +432,12 @@ if uploaded:
             text=f'Healthy Probability: {probability * 100:.1f}%'
         )
 
-# ── Footer ────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────
+# FOOTER
+# ──────────────────────────────────────────────────────────────────
 
-st.divider()
+st.markdown("<br><br>", unsafe_allow_html=True)
 
 st.caption(
-    "Built with AI for sustainable cocoa farming and early disease detection in Ghana 🇬🇭"
+    "CocoaGuard GH • AI for Sustainable Cocoa Farming in Ghana 🇬🇭"
 )
