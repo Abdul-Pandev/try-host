@@ -13,15 +13,15 @@ st.set_page_config(
 )
 
 # ── Load models ───────────────────────────────────────────────────
-@st.cache_resource
+
 @st.cache_resource
 def load_cocoa_checker():
     return tf.keras.models.load_model('cocoa_checker.keras',
                                       compile=False)
 
 @st.cache_resource
-def load_cocoa_checker():
-    return tf.keras.models.load_model('cocoa_checker.keras',
+def load_disease_model():
+    return tf.keras.models.load_model('cssvd_model.keras',
                                       compile=False,
                                       custom_objects={
                                           'EfficientNetPreprocessing': EfficientNetPreprocessing
