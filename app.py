@@ -12,17 +12,26 @@ st.set_page_config(
     layout='centered'
 )
 
+# ── Load both models ──────────────────────────────────────────────
 @st.cache_resource
-def load_model():
+def load_disease_model():
     return tf.keras.models.load_model('cssvd_model.keras',
                                       compile=False,
                                       custom_objects={
                                           'EfficientNetPreprocessing': EfficientNetPreprocessing
                                       })
 
-model = load_model()
-OPTIMAL_THRESHOLD = 0.65
-CLASS_NAMES = ['cssvd', 'healthy']
+@st.cache_resource
+def load_cocoa_checker():
+    return tf.keras.models.load_model('cocoa_checker.keras',
+                                      compile=False)
+
+disease_model = load_disease_model()
+cocoa_model   = load_cocoa_checker()
+
+# ── Constants ─────────────────────────────────────────────────────
+DISEASE_THRESHOLD = 0.65
+COCOA_THRESHOLD   = 0.65  # adjust if needed after testing
 
 LANGUAGES = {
     "English": "eng",
@@ -46,9 +55,9 @@ RESULTS = {
     }
 }
 
+# ── Audio ─────────────────────────────────────────────────────────
 def play_audio(lang_folder, result_class):
     url = f"https://raw.githubusercontent.com/Abdul-Pandev/try-host/main/Audio/{lang_folder}/{result_class}.mp3"
-
     st.audio(url, format="audio/mp3")
 
 # ── UI ────────────────────────────────────────────────────────────
@@ -62,7 +71,6 @@ lang_label = st.selectbox(
 )
 lang_folder = LANGUAGES[lang_label]
 st.success(f"✓ Language set to: {lang_label}")
-
 st.divider()
 
 uploaded = st.file_uploader(
@@ -71,19 +79,30 @@ uploaded = st.file_uploader(
     help='Take a clear, close-up photo of the leaf you want to check'
 )
 
-
 if uploaded:
     image = Image.open(uploaded).convert('RGB')
     st.image(image, caption='Uploaded photo', use_column_width=True)
 
-    with st.spinner('Analyzing...'):
+    with st.spinner('Checking image...'):
         img = image.resize((224, 224))
         img_array = np.array(img, dtype=np.float32)
         img_array = np.expand_dims(img_array, axis=0)
-        probability = model.predict(img_array)[0][0]
-        predicted = 'healthy' if probability > OPTIMAL_THRESHOLD else 'cssvd'
-        confidence = probability if probability > OPTIMAL_THRESHOLD else 1 - probability
-        result = RESULTS[predicted]
+
+        # Step 1 — Is this a cocoa image?
+        cocoa_prob = cocoa_model.predict(img_array)[0][0]
+        is_cocoa = cocoa_prob >= COCOA_THRESHOLD
+
+    if not is_cocoa:
+        st.divider()
+        st.warning("🍃 This does not appear to be a cocoa leaf or stem. Please upload a clear photo of a cocoa plant.")
+        st.stop()
+
+    # Step 2 — Run disease detection only if cocoa confirmed
+    with st.spinner('Analyzing for CSSVD...'):
+        probability = disease_model.predict(img_array)[0][0]
+        predicted  = 'healthy' if probability > DISEASE_THRESHOLD else 'cssvd'
+        confidence = probability if probability > DISEASE_THRESHOLD else 1 - probability
+        result     = RESULTS[predicted]
 
     st.divider()
 
