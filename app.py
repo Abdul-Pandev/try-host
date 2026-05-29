@@ -29,6 +29,10 @@ def load_cocoa_checker():
 disease_model = load_disease_model()
 cocoa_model   = load_cocoa_checker()
 
+cocoa_prob = cocoa_model.predict(img_array)[0][0]
+st.write(f"Raw output shape: {cocoa_model.predict(img_array).shape}")
+st.write(f"Full output: {cocoa_model.predict(img_array)}")
+st.write(f"Cocoa prob: {cocoa_prob:.4f}")
 # ── Constants ─────────────────────────────────────────────────────
 DISEASE_THRESHOLD = 0.65
 COCOA_THRESHOLD   = 0.5  # adjust if needed after testing
