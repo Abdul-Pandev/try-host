@@ -1,3 +1,4 @@
+```python
 import streamlit as st
 import tensorflow as tf
 import numpy as np
@@ -26,71 +27,48 @@ st.markdown("""
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* Main App Background */
+/* App Background */
 .stApp {
     background: linear-gradient(180deg, #f4fff4 0%, #eef7ee 100%);
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Main container spacing */
+/* Main spacing */
 .block-container {
     padding-top: 1rem;
     padding-bottom: 2rem;
     max-width: 1250px;
 }
 
-# ─────────────────────────────────────────────────────────────
-# HERO SECTION
-# ─────────────────────────────────────────────────────────────
-
-st.markdown(
-    """
-    <style>
-    .hero {
-        background: linear-gradient(
-            rgba(7, 47, 24, 0.82),
-            rgba(7, 47, 24, 0.82)
-        ),
+/* Hero Section */
+.hero {
+    background:
+        linear-gradient(rgba(7, 47, 24, 0.82),
+        rgba(7, 47, 24, 0.82)),
         url("https://images.unsplash.com/photo-1598515213692-d9c8b8f6dd12?q=80&w=1600&auto=format&fit=crop");
 
-        background-size: cover;
-        background-position: center;
-        border-radius: 28px;
-        padding: 4rem 3rem;
-        color: white;
-        margin-bottom: 2rem;
-        box-shadow: 0 10px 35px rgba(0,0,0,0.15);
-    }
+    background-size: cover;
+    background-position: center;
+    border-radius: 28px;
+    padding: 4rem 3rem;
+    color: white;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+}
 
-    .hero-title {
-        font-size: 3.4rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-    }
+.hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
 
-    .hero-subtitle {
-        font-size: 1.15rem;
-        line-height: 1.8;
-        max-width: 750px;
-    }
-    </style>
+.hero-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    max-width: 750px;
+}
 
-    <div class="hero">
-        <div class="hero-title">
-            CocoaGuard GH 🌿
-        </div>
-
-        <div class="hero-subtitle">
-            Smart AI-powered early detection system for Cocoa Swollen Shoot Virus Disease (CSSVD),
-            helping cocoa farmers across Ghana identify infections early, reduce crop losses,
-            and improve sustainable cocoa production.
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-/* Glass Cards */
+/* Glass cards */
 .card {
     background: rgba(255,255,255,0.88);
     backdrop-filter: blur(10px);
@@ -100,7 +78,7 @@ st.markdown(
     border: 1px solid rgba(255,255,255,0.4);
 }
 
-/* Upload area */
+/* File uploader */
 [data-testid="stFileUploader"] {
     background: white;
     border: 2px dashed #166534;
@@ -126,7 +104,7 @@ st.markdown(
     color: white;
 }
 
-/* Result Boxes */
+/* Result boxes */
 .success-box {
     background: #dcfce7;
     border-left: 6px solid #16a34a;
@@ -154,7 +132,7 @@ st.markdown(
     font-weight: 600;
 }
 
-/* Audio Player */
+/* Audio player */
 audio {
     width: 100%;
     margin-top: 10px;
@@ -338,7 +316,7 @@ with right:
     agricultural extension officers in identifying Cocoa Swollen Shoot Virus Disease (CSSVD) early.
 
     Upload a cocoa plant image and the system will:
-    
+
     • Verify if it is a cocoa plant  
     • Detect signs of CSSVD  
     • Provide confidence scores  
@@ -462,3 +440,4 @@ st.markdown("<br><br>", unsafe_allow_html=True)
 st.caption(
     "CocoaGuard GH • AI for Sustainable Cocoa Farming in Ghana 🇬🇭"
 )
+```
