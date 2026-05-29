@@ -4,9 +4,9 @@ import numpy as np
 from PIL import Image
 from model_utils import EfficientNetPreprocessing
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # PAGE CONFIG
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 st.set_page_config(
     page_title="CocoaGuard GH",
@@ -14,13 +14,32 @@ st.set_page_config(
     layout="wide"
 )
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # CUSTOM CSS
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 st.markdown("""
 <style>
 
+/* Hide Streamlit branding */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* Main App Background */
+.stApp {
+    background: linear-gradient(180deg, #f4fff4 0%, #eef7ee 100%);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Main container spacing */
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    max-width: 1250px;
+}
+
+/* Hero section */
 .hero {
     background:
         linear-gradient(rgba(7, 47, 24, 0.82),
@@ -33,82 +52,38 @@ st.markdown("""
     padding: 4rem 3rem;
     color: white;
     margin-bottom: 2rem;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.15);
 }
 
 .hero-title {
-    font-size: 3.2rem;
+    font-size: 3.4rem;
     font-weight: 800;
+    line-height: 1.1;
     margin-bottom: 1rem;
 }
 
 .hero-subtitle {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     line-height: 1.8;
-    max-width: 700px;
+    max-width: 750px;
+    opacity: 0.95;
 }
 
-</style>
-""", unsafe_allow_html=True)
-
-
-.hero {
-    background:
-        linear-gradient(rgba(7, 47, 24, 0.82),
-        rgba(7, 47, 24, 0.82)),
-        url('https://images.unsplash.com/photo-1598515213692-d9c8b8f6dd12?q=80&w=1600&auto=format&fit=crop');
-
-    background-size: cover;
-    background-position: center;
-    border-radius: 28px;
-    padding: 4rem 3rem;
-    color: white;
-    margin-bottom: 2rem;
-}
-
-.hero-title {
-    font-size: 3.2rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-}
-
-.hero-subtitle {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    max-width: 700px;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
-st.markdown("""
-<div class="hero">
-    <h1 class="hero-title">CocoaGuard GH 🌿</h1>
-
-    <p class="hero-subtitle">
-        Smart AI-powered early detection system for Cocoa Swollen Shoot Virus Disease (CSSVD),
-        helping cocoa farmers across Ghana identify infections early, reduce crop losses,
-        and improve sustainable cocoa production.
-    </p>
-</div>
-""", unsafe_allow_html=True)
-
-
-/* Cards */
+/* Glass Cards */
 .card {
     background: rgba(255,255,255,0.88);
     backdrop-filter: blur(10px);
-    border-radius: 22px;
+    border-radius: 24px;
     padding: 1.5rem;
     box-shadow: 0 6px 24px rgba(0,0,0,0.07);
-    border: 1px solid rgba(255,255,255,0.35);
+    border: 1px solid rgba(255,255,255,0.4);
 }
 
 /* Upload area */
 [data-testid="stFileUploader"] {
     background: white;
     border: 2px dashed #166534;
-    border-radius: 20px;
+    border-radius: 18px;
     padding: 1rem;
 }
 
@@ -130,13 +105,7 @@ st.markdown("""
     color: white;
 }
 
-/* Audio */
-audio {
-    width: 100%;
-    margin-top: 10px;
-}
-
-/* Result badges */
+/* Result Boxes */
 .success-box {
     background: #dcfce7;
     border-left: 6px solid #16a34a;
@@ -164,15 +133,13 @@ audio {
     font-weight: 600;
 }
 
-/* Buttons */
-.stButton button {
-    background: #166534;
-    color: white;
-    border: none;
-    border-radius: 12px;
+/* Audio Player */
+audio {
+    width: 100%;
+    margin-top: 10px;
 }
 
-/* Progress */
+/* Progress bar */
 .stProgress > div > div {
     border-radius: 20px;
 }
@@ -180,9 +147,9 @@ audio {
 </style>
 """, unsafe_allow_html=True)
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # LOAD MODELS
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 @st.cache_resource
 def load_cocoa_checker():
@@ -204,9 +171,9 @@ def load_disease_model():
 disease_model = load_disease_model()
 cocoa_model = load_cocoa_checker()
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # CONSTANTS
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 DISEASE_THRESHOLD = 0.65
 COCOA_THRESHOLD = 0.65
@@ -234,17 +201,17 @@ RESULTS = {
     }
 }
 
-# ──────────────────────────────────────────────────────────────────
-# AUDIO
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
+# AUDIO FUNCTION
+# ─────────────────────────────────────────────────────────────
 
 def play_audio(lang_folder, result_class):
     url = f"https://raw.githubusercontent.com/Abdul-Pandev/try-host/main/Audio/{lang_folder}/{result_class}.mp3"
     st.audio(url, format="audio/mp3")
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # SIDEBAR
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 with st.sidebar:
 
@@ -257,10 +224,10 @@ with st.sidebar:
 
     st.divider()
 
-    st.markdown("### 🌍 Language")
+    st.subheader("🌍 Language")
 
     lang_label = st.selectbox(
-        "",
+        "Choose Language",
         options=list(LANGUAGES.keys())
     )
 
@@ -268,22 +235,23 @@ with st.sidebar:
 
     st.divider()
 
-    st.markdown("### 🛡 Features")
+    st.subheader("🛡 Features")
 
     st.markdown("""
     ✅ Cocoa Verification  
     ✅ CSSVD Detection  
+    ✅ AI-powered Analysis  
     ✅ Audio Feedback  
     ✅ Multi-language Support  
-    ✅ AI-powered Analysis  
     """)
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # HERO SECTION
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 st.markdown("""
 <div class="hero">
+
     <div class="hero-title">
         CocoaGuard GH 🌿
     </div>
@@ -293,18 +261,19 @@ st.markdown("""
         helping cocoa farmers across Ghana identify infections early, reduce crop losses,
         and improve sustainable cocoa production.
     </div>
+
 </div>
 """, unsafe_allow_html=True)
 
-# ──────────────────────────────────────────────────────────────────
-# MAIN CONTENT
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
+# MAIN LAYOUT
+# ─────────────────────────────────────────────────────────────
 
 left, right = st.columns([1.1, 0.9], gap="large")
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # LEFT COLUMN
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 with left:
 
@@ -329,13 +298,13 @@ with left:
 
         st.subheader("🖼 Uploaded Sample")
 
-        st.image(image, use_column_width=True)
+        st.image(image, use_container_width=True)
 
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # RIGHT COLUMN
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 with right:
 
@@ -344,34 +313,37 @@ with right:
     st.subheader("ℹ️ About CocoaGuard")
 
     st.markdown("""
-    CocoaGuard GH uses Artificial Intelligence to assist cocoa farmers and agricultural
-    extension officers in identifying Cocoa Swollen Shoot Virus Disease (CSSVD) early.
+    CocoaGuard GH uses Artificial Intelligence to assist cocoa farmers and
+    agricultural extension officers in identifying Cocoa Swollen Shoot Virus Disease (CSSVD) early.
 
     Upload a cocoa plant image and the system will:
-    - Verify if it is a cocoa plant
-    - Detect signs of CSSVD
-    - Provide confidence scores
-    - Deliver multilingual audio feedback
+    
+    • Verify if it is a cocoa plant  
+    • Detect signs of CSSVD  
+    • Provide confidence scores  
+    • Deliver multilingual audio feedback  
     """)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # PREDICTION FLOW
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 if uploaded:
 
     img = image.resize((224, 224))
+
     img_array = np.array(img, dtype=np.float32)
     img_array = np.expand_dims(img_array, axis=0)
 
-    # Cocoa Check
+    # Cocoa Verification
     with st.spinner("🌿 Verifying cocoa plant..."):
 
         cocoa_prob = cocoa_model.predict(img_array)[0][0]
         is_cocoa = cocoa_prob <= COCOA_THRESHOLD
 
+    # Non-cocoa
     if not is_cocoa:
 
         st.markdown("""
@@ -406,7 +378,7 @@ if uploaded:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Result Card
+    # Result Box
     if result['type'] == 'success':
 
         st.markdown(f"""
@@ -425,6 +397,7 @@ if uploaded:
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    # Metrics
     m1, m2 = st.columns(2)
 
     with m1:
@@ -443,6 +416,7 @@ if uploaded:
 
     # Audio
     st.subheader("🔊 Audio Feedback")
+
     play_audio(lang_folder, predicted)
 
     # Breakdown
@@ -458,9 +432,9 @@ if uploaded:
             text=f'Healthy Probability: {probability * 100:.1f}%'
         )
 
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 # FOOTER
-# ──────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
 
 st.markdown("<br><br>", unsafe_allow_html=True)
 
