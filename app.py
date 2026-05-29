@@ -39,35 +39,56 @@ header {visibility: hidden;}
     max-width: 1250px;
 }
 
-/* Hero section */
-.hero {
-    background:
-        linear-gradient(rgba(7, 47, 24, 0.82),
-        rgba(7, 47, 24, 0.82)),
-        url('https://images.unsplash.com/photo-1598515213692-d9c8b8f6dd12?q=80&w=1600&auto=format&fit=crop');
+# ─────────────────────────────────────────────────────────────
+# HERO SECTION
+# ─────────────────────────────────────────────────────────────
 
-    background-size: cover;
-    background-position: center;
-    border-radius: 28px;
-    padding: 4rem 3rem;
-    color: white;
-    margin-bottom: 2rem;
-    box-shadow: 0 10px 35px rgba(0,0,0,0.15);
-}
+st.markdown(
+    """
+    <style>
+    .hero {
+        background: linear-gradient(
+            rgba(7, 47, 24, 0.82),
+            rgba(7, 47, 24, 0.82)
+        ),
+        url("https://images.unsplash.com/photo-1598515213692-d9c8b8f6dd12?q=80&w=1600&auto=format&fit=crop");
 
-.hero-title {
-    font-size: 3.4rem;
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-}
+        background-size: cover;
+        background-position: center;
+        border-radius: 28px;
+        padding: 4rem 3rem;
+        color: white;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+    }
 
-.hero-subtitle {
-    font-size: 1.15rem;
-    line-height: 1.8;
-    max-width: 750px;
-    opacity: 0.95;
-}
+    .hero-title {
+        font-size: 3.4rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        max-width: 750px;
+    }
+    </style>
+
+    <div class="hero">
+        <div class="hero-title">
+            CocoaGuard GH 🌿
+        </div>
+
+        <div class="hero-subtitle">
+            Smart AI-powered early detection system for Cocoa Swollen Shoot Virus Disease (CSSVD),
+            helping cocoa farmers across Ghana identify infections early, reduce crop losses,
+            and improve sustainable cocoa production.
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 /* Glass Cards */
 .card {
